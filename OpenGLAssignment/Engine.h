@@ -7,6 +7,7 @@
 #include <gl\glu.h>			// Header File For The GLu32 Library
 #include <gl\glaux.h>		// Header File For The Glaux Library
 #include <GL\SOIL.h>			// Header File For The SOIL Library
+#include "MilkshapeModel.h"		
 
 class Engine {	
 public:
@@ -15,6 +16,7 @@ public:
 	HGLRC		hRC = NULL;		// Permanent Rendering Context
 	HWND		hWnd = NULL;		// Holds Our Window Handle
 	HINSTANCE	hInstance;		// Holds The Instance Of The Application
+	Model*		pModel = NULL;
 
 	Engine() {}
 

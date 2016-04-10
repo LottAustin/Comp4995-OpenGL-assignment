@@ -2,7 +2,7 @@
 
 int Engine::InitGL(GLvoid)								// All Setup For OpenGL Goes Here
 {
-	texCount_ = 0;										// initialize counter for textures
+	/*texCount_ = 0;										// initialize counter for textures
 
 	if (!LoadGLTexture("Data/Crate.bmp"))				// Jump To Texture Loading Routine
 	{
@@ -12,7 +12,16 @@ int Engine::InitGL(GLvoid)								// All Setup For OpenGL Goes Here
 	if (!LoadGLTexture("Data/NeHe.bmp"))				// Jump To Texture Loading Routine
 	{
 		return FALSE;									// If Texture Didn't Load Return FALSE
+	}*/
+
+	pModel = new MilkshapeModel();									// Memory To Hold The Model
+	if (pModel->loadModelData("data/House01.ms3d") == false)		// Loads The Model And Checks For Errors
+	{
+		MessageBox(NULL, "Couldn't load the model data\\model.ms3d", "Error", MB_OK | MB_ICONERROR);
+		return 0;													// If Model Didn't Load Quit
 	}
+
+	pModel->reloadTextures();
 
 	xspeed_ = 0.0f;
 	yspeed_ = 0.0f;
@@ -31,6 +40,9 @@ int Engine::InitGL(GLvoid)								// All Setup For OpenGL Goes Here
 	glLightfv(GL_LIGHT1, GL_DIFFUSE, LightDiffuse_);	// Setup The Diffuse Light
 	glLightfv(GL_LIGHT1, GL_POSITION, LightPosition_);	// Position The Light
 	glEnable(GL_LIGHT1);								// Enable Light One
+
+	SetDepth(-80.0f);
+
 	return TRUE;										// Initialization Went OK
 }
 
@@ -85,13 +97,15 @@ int Engine::DrawGLScene(GLvoid)								// Here's Where We Do All The Drawing
 	glRotatef(xrot_, 1.0f, 0.0f, 0.0f);
 	glRotatef(yrot_, 0.0f, 1.0f, 0.0f);
 
-	glBindTexture(GL_TEXTURE_2D, texture_[0]);
+	pModel->draw();
+
+	/*glBindTexture(GL_TEXTURE_2D, texture_[0]);
 
 	MakeBox();
 	glTranslatef(0.0f, 5.0f, 0.0f);
 
 	glBindTexture(GL_TEXTURE_2D, texture_[1]);
-	MakeBox();
+	MakeBox();*/
 
 	xrot_ += xspeed_;
 	yrot_ += yspeed_;
