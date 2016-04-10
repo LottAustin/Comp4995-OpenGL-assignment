@@ -13,6 +13,10 @@ bool	keys[256];			// Array Used For The Keyboard Routine
 bool	light;				// Lighting ON/OFF ( NEW )
 bool	lp;					// L Pressed? ( NEW )
 
+const float piover180 = 0.01745329238f;
+float heading = 0;
+float walkbiasangle = 0;
+
 LRESULT	CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);	// Declaration For WndProc
 
 /*	This Code Creates Our OpenGL Window.  Parameters Are:					*
@@ -314,54 +318,50 @@ int WINAPI WinMain(HINSTANCE	hInstance,			// Instance
 				if (keys['S'])
 				{
 					GLfloat z = eng.GetDepth();
-					z -= 0.02f;
+					GLfloat x = eng.GetHorizontal();
+					//z += 0.02f;
+					z -= (float)cos(heading * piover180) * 0.05f;
+					x -= (float)sin(heading*piover180) * 0.05f;
+					if (walkbiasangle <= 1.0f)
+					{
+						walkbiasangle = 0.0f;
+					}
+					else
+					{
+						walkbiasangle += 10;
+					}
+					//eng.SetWalkbias((float)sin(walkbiasangle * piover180) / 20.0f);
 					eng.SetDepth(z);
+					eng.SetHorizontal(x);
 				}
 				if (keys['W'])
 				{
 					GLfloat z = eng.GetDepth();
-					z += 0.02f;
+					GLfloat x = eng.GetHorizontal();
+					//z += 0.02f;
+					z += (float)cos(heading * piover180) * 0.05f;
+					x += (float)sin(heading*piover180) * 0.05f;
+					if (walkbiasangle <= 1.0f)
+					{
+						walkbiasangle = 359.0f;
+					}
+					else
+					{
+						walkbiasangle -= 10;
+					}
+					//eng.SetWalkbias((float)sin(walkbiasangle * piover180) / 20.0f);
 					eng.SetDepth(z);
-				}
-				if (keys[VK_UP])
-				{
-					GLfloat xspeed = eng.GetXSpeed();
-					xspeed -= 0.0001f;
-					xspeed -= 0.1f;
-					eng.SetXSpeed(xspeed);
-				}
-				if (keys[VK_DOWN])
-				{
-					GLfloat xspeed = eng.GetXSpeed();
-					xspeed += 0.0001f;
-					xspeed += 0.1f;
-					eng.SetXSpeed(xspeed);
+					eng.SetHorizontal(x);
 				}
 				if (keys['D'])
 				{
-					GLfloat yspeed = eng.GetYSpeed();
-					yspeed += 0.0001f;
-					yspeed += 0.1f;
-					eng.SetYSpeed(yspeed);
+					heading -= .5f;
+					eng.SetYSpeed(heading);
 				}
 				if (keys['A'])
 				{
-					GLfloat yspeed = eng.GetYSpeed();
-					yspeed -= 0.0001f;
-					yspeed -= 0.1f;
-					eng.SetYSpeed(yspeed);
-				}
-				if (keys[VK_LEFT])
-				{
-					GLfloat x = eng.GetHorizontal();
-					x += 0.02;
-					eng.SetHorizontal(x);
-				}
-				if (keys[VK_RIGHT])
-				{
-					GLfloat x = eng.GetHorizontal();
-					x -= 0.02;
-					eng.SetHorizontal(x);
+					heading += .5f;
+					eng.SetYSpeed(heading);
 				}
 
 				if (keys[VK_F1])						// Is F1 Being Pressed?

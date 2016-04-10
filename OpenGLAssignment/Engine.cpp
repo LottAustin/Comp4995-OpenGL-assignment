@@ -93,10 +93,11 @@ int Engine::DrawGLScene(GLvoid)								// Here's Where We Do All The Drawing
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);		// Clear The Screen And The Depth Buffer
 	glLoadIdentity();										// Reset The View
 
-	glRotatef(xspeed_, 1.0f, 0.0f, 0.0f);
-	glRotatef(yspeed_, 0.0f, 1.0f, 0.0f);
+	GLfloat ytrans = walkbias - 5.0f;
 
-	glTranslatef(x_, y_ - 5, z_);
+	glRotatef(-yspeed_, 0.0f, 1.0f, 0.0f);
+
+	glTranslatef(x_, ytrans, z_);
 
 	glColorMask(0, 0, 0, 0);
 
@@ -499,4 +500,8 @@ void Engine::MakeFloor() {
 	glTexCoord2f(1.0f, 0.0f); glVertex3f(100.0f, 1.0f, 100.0f);
 	glTexCoord2f(1.0f, 1.0f); glVertex3f(100.0f, 1.0f, -100.0f);
 	glEnd();
+}
+
+void Engine::SetWalkbias(float wb) {
+	walkbias = wb;
 }

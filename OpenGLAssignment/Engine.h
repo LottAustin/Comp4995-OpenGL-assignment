@@ -48,6 +48,8 @@ public:
 
 	GLfloat GetYSpeed();
 
+	void	SetWalkbias(float wb);
+
 	void	SetYSpeed(GLfloat speed);
 
 	bool	GetActive();
@@ -90,6 +92,7 @@ private:
 	GLfloat		x_ = 0;				// Horizontal Position In The Screen
 	GLfloat		y_ = 0;				// Verticall Position In The Screen
 	int texCount_;
+	float walkbias = 0;
 
 	// loads textures into memory
 	int			LoadGLTexture(const char* filePath);
