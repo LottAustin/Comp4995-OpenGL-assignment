@@ -107,8 +107,8 @@ int Engine::DrawGLScene(GLvoid)								// Here's Where We Do All The Drawing
 
 	glDisable(GL_DEPTH_TEST);
 	DrawWater();
-
 	glEnable(GL_DEPTH_TEST);
+
 	glColorMask(1, 1, 1, 1);
 	glStencilFunc(GL_EQUAL, 1, 1);
 
@@ -125,7 +125,6 @@ int Engine::DrawGLScene(GLvoid)								// Here's Where We Do All The Drawing
 
 	glEnable(GL_BLEND);
 	glDisable(GL_LIGHTING);
-	glColor4f(1.0f, 1.0f, 1.0f, 0.8f);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	DrawWater();
@@ -135,9 +134,6 @@ int Engine::DrawGLScene(GLvoid)								// Here's Where We Do All The Drawing
 	glScalef(0.5f, 0.5f, 0.5f);
 	pModel->draw();
 	//xspeed_ = yspeed_ = 0;
-
-
-	pModel->draw();
 
 	glTranslatef(0.0f, -10.0f, 0.0f);
 
