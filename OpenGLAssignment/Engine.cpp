@@ -2,18 +2,6 @@
 
 int Engine::InitGL(GLvoid)								// All Setup For OpenGL Goes Here
 {
-	/*texCount_ = 0;										// initialize counter for textures
-
-	if (!LoadGLTexture("Data/Crate.bmp"))				// Jump To Texture Loading Routine
-	{
-		return FALSE;									// If Texture Didn't Load Return FALSE
-	}
-
-	if (!LoadGLTexture("Data/NeHe.bmp"))				// Jump To Texture Loading Routine
-	{
-		return FALSE;									// If Texture Didn't Load Return FALSE
-	}*/
-
 	pModel = new MilkshapeModel();									// Memory To Hold The Model
 	if (pModel->loadModelData("data/House01.ms3d") == false)		// Loads The Model And Checks For Errors
 	{
@@ -22,6 +10,18 @@ int Engine::InitGL(GLvoid)								// All Setup For OpenGL Goes Here
 	}
 
 	pModel->reloadTextures();
+
+	texCount_ = 0;										// initialize counter for textures
+
+	if (!LoadGLTexture("Data/Crate.bmp"))				// Jump To Texture Loading Routine
+	{
+		return FALSE;									// If Texture Didn't Load Return FALSE
+	}
+
+	if (!LoadGLTexture("Data/Sand.bmp"))				// Jump To Texture Loading Routine
+	{
+		return FALSE;									// If Texture Didn't Load Return FALSE
+	}
 
 	xspeed_ = 0.0f;
 	yspeed_ = 0.0f;
@@ -82,7 +82,7 @@ GLvoid Engine::ReSizeGLScene(GLsizei width, GLsizei height)	// Resize And Initia
 	glLoadIdentity();										// Reset The Projection Matrix
 
 															// Calculate The Aspect Ratio Of The Window
-	gluPerspective(45.0f, (GLfloat)width / (GLfloat)height, 0.1f, 100.0f);
+	gluPerspective(45.0f, (GLfloat)width / (GLfloat)height, 0.1f, 1000.0f);
 
 	glMatrixMode(GL_MODELVIEW);								// Select The Modelview Matrix
 	glLoadIdentity();										// Reset The Modelview Matrix
@@ -92,23 +92,22 @@ int Engine::DrawGLScene(GLvoid)								// Here's Where We Do All The Drawing
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);		// Clear The Screen And The Depth Buffer
 	glLoadIdentity();										// Reset The View
-	glTranslatef(0.0f, 0.0f, z_);
 
-	glRotatef(xrot_, 1.0f, 0.0f, 0.0f);
-	glRotatef(yrot_, 0.0f, 1.0f, 0.0f);
+	glRotatef(xspeed_, 1.0f, 0.0f, 0.0f);
+	glRotatef(yspeed_, 0.0f, 1.0f, 0.0f);
+
+	glTranslatef(x_, y_, z_);
+	//xspeed_ = yspeed_ = 0;
+
 
 	pModel->draw();
 
-	/*glBindTexture(GL_TEXTURE_2D, texture_[0]);
-
-	MakeBox();
-	glTranslatef(0.0f, 5.0f, 0.0f);
+	glTranslatef(0.0f, -20.0f, 0.0f);
 
 	glBindTexture(GL_TEXTURE_2D, texture_[1]);
-	MakeBox();*/
+	//MakeBox();
+	MakeFloor();
 
-	xrot_ += xspeed_;
-	yrot_ += yspeed_;
 	return TRUE;										// Keep Going
 }
 
@@ -344,6 +343,14 @@ void Engine::SetDepth(GLfloat z) {
 	z_ = z;
 }
 
+GLfloat Engine::GetHorizontal() {
+	return x_;
+}
+
+void Engine::SetHorizontal(GLfloat x) {
+	x_ = x;
+}
+
 GLfloat Engine::GetXSpeed() {
 	return xspeed_;
 }
@@ -406,5 +413,15 @@ void Engine::MakeBox() {
 	glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f, 1.0f);
 	glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f, 1.0f, 1.0f);
 	glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f, 1.0f, -1.0f);
+	glEnd();
+}
+
+void Engine::MakeFloor() {
+	glBegin(GL_QUADS);
+	glNormal3f(0.0f, 1.0f, 0.0f);
+	glTexCoord2f(0.0f, 1.0f); glVertex3f(-100.0f, 1.0f, -100.0f);
+	glTexCoord2f(0.0f, 0.0f); glVertex3f(-100.0f, 1.0f, 100.0f);
+	glTexCoord2f(1.0f, 0.0f); glVertex3f(100.0f, 1.0f, 100.0f);
+	glTexCoord2f(1.0f, 1.0f); glVertex3f(100.0f, 1.0f, -100.0f);
 	glEnd();
 }

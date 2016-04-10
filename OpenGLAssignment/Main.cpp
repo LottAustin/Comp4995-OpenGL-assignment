@@ -311,13 +311,13 @@ int WINAPI WinMain(HINSTANCE	hInstance,			// Instance
 				{
 					lp = FALSE;
 				}
-				if (keys[VK_PRIOR])
+				if (keys['S'])
 				{
 					GLfloat z = eng.GetDepth();
 					z -= 0.02f;
 					eng.SetDepth(z);
 				}
-				if (keys[VK_NEXT])
+				if (keys['W'])
 				{
 					GLfloat z = eng.GetDepth();
 					z += 0.02f;
@@ -326,26 +326,38 @@ int WINAPI WinMain(HINSTANCE	hInstance,			// Instance
 				if (keys[VK_UP])
 				{
 					GLfloat xspeed = eng.GetXSpeed();
-					xspeed -= 0.001f;
+					xspeed -= 0.1f;
 					eng.SetXSpeed(xspeed);
 				}
 				if (keys[VK_DOWN])
 				{
 					GLfloat xspeed = eng.GetXSpeed();
-					xspeed += 0.001f;
+					xspeed += 0.1f;
 					eng.SetXSpeed(xspeed);
 				}
-				if (keys[VK_RIGHT])
+				if (keys['D'])
 				{
 					GLfloat yspeed = eng.GetYSpeed();
-					yspeed += 0.001f;
+					yspeed += 0.1f;
+					eng.SetYSpeed(yspeed);
+				}
+				if (keys['A'])
+				{
+					GLfloat yspeed = eng.GetYSpeed();
+					yspeed -= 0.1f;
 					eng.SetYSpeed(yspeed);
 				}
 				if (keys[VK_LEFT])
 				{
-					GLfloat yspeed = eng.GetYSpeed();
-					yspeed -= 0.001f;
-					eng.SetYSpeed(yspeed);
+					GLfloat x = eng.GetHorizontal();
+					x += 0.02;
+					eng.SetHorizontal(x);
+				}
+				if (keys[VK_RIGHT])
+				{
+					GLfloat x = eng.GetHorizontal();
+					x -= 0.02;
+					eng.SetHorizontal(x);
 				}
 
 				if (keys[VK_F1])						// Is F1 Being Pressed?

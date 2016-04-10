@@ -41,6 +41,10 @@ public:
 
 	void	SetDepth(GLfloat z);
 
+	GLfloat GetHorizontal();
+
+	void	SetHorizontal(GLfloat x);
+
 	GLfloat GetXSpeed();
 
 	void	SetXSpeed(GLfloat speed);
@@ -68,12 +72,18 @@ private:
 	GLfloat		xspeed_;			// X Rotation Speed
 	GLfloat		yspeed_;			// Y Rotation Speed
 	GLfloat		z_ = -5.0f;			// Depth Into The Screen
+	GLfloat		x_ = 0;				// Horizontal Position In The Screen
+	GLfloat		y_ = 0;				// Verticall Position In The Screen
 	int texCount_;
 
 	// loads textures into memory
 	int			LoadGLTexture(const char* filePath);
 
+	// Loads a basic Box mesh made via OpenGL quads
 	void		MakeBox();
+
+	// Loads a basice Floor made via a OpenGL quad
+	void		MakeFloor();
 };
 
 #endif
