@@ -355,12 +355,12 @@ int WINAPI WinMain(HINSTANCE	hInstance,			// Instance
 				}
 				if (keys['D'])
 				{
-					heading -= .5f;
+					heading -= 0.5f;
 					eng.SetYSpeed(heading);
 				}
 				if (keys['A'])
 				{
-					heading += .5f;
+					heading += 0.5f;
 					eng.SetYSpeed(heading);
 				}
 

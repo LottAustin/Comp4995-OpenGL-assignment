@@ -88,7 +88,6 @@ private:
 	GLfloat		yspeed_;			// Y Rotation Speed
 	GLfloat		z_ = -5.0f;			// Depth Into The Screen
 	GLfloat		wave = 0.0f;
-	double eqr[4] = { 0.0f, -1.0f, 0.0f, sin(wave) / 10 };
 	GLfloat		x_ = 0;				// Horizontal Position In The Screen
 	GLfloat		y_ = 0;				// Verticall Position In The Screen
 	int texCount_;
