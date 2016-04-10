@@ -2,18 +2,6 @@
 
 int Engine::InitGL(GLvoid)								// All Setup For OpenGL Goes Here
 {
-	/*texCount_ = 0;										// initialize counter for textures
-
-	if (!LoadGLTexture("Data/Crate.bmp"))				// Jump To Texture Loading Routine
-	{
-		return FALSE;									// If Texture Didn't Load Return FALSE
-	}
-
-	if (!LoadGLTexture("Data/NeHe.bmp"))				// Jump To Texture Loading Routine
-	{
-		return FALSE;									// If Texture Didn't Load Return FALSE
-	}*/
-
 	pModel = new MilkshapeModel();									// Memory To Hold The Model
 	if (pModel->loadModelData("data/House01.ms3d") == false)		// Loads The Model And Checks For Errors
 	{
@@ -22,6 +10,18 @@ int Engine::InitGL(GLvoid)								// All Setup For OpenGL Goes Here
 	}
 
 	pModel->reloadTextures();
+
+	texCount_ = 0;										// initialize counter for textures
+
+	if (!LoadGLTexture("Data/Crate.bmp"))				// Jump To Texture Loading Routine
+	{
+		return FALSE;									// If Texture Didn't Load Return FALSE
+	}
+
+	if (!LoadGLTexture("Data/Sand.bmp"))				// Jump To Texture Loading Routine
+	{
+		return FALSE;									// If Texture Didn't Load Return FALSE
+	}
 
 	xspeed_ = 0.0f;
 	yspeed_ = 0.0f;
@@ -92,10 +92,11 @@ int Engine::DrawGLScene(GLvoid)								// Here's Where We Do All The Drawing
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);		// Clear The Screen And The Depth Buffer
 	glLoadIdentity();										// Reset The View
-	glTranslatef(0.0f, 0.0f, z_);
 
-	glRotatef(xrot_, 1.0f, 0.0f, 0.0f);
-	glRotatef(yrot_, 0.0f, 1.0f, 0.0f);
+	glRotatef(xspeed_, 1.0f, 0.0f, 0.0f);
+	glRotatef(yspeed_, 0.0f, 1.0f, 0.0f);
+
+	glTranslatef(x_, y_ - 5, z_);
 
 	glColorMask(0, 0, 0, 0);
 
@@ -132,14 +133,16 @@ int Engine::DrawGLScene(GLvoid)								// Here's Where We Do All The Drawing
 	glDisable(GL_BLEND);
 	glScalef(0.5f, 0.5f, 0.5f);
 	pModel->draw();
+	//xspeed_ = yspeed_ = 0;
 
-	/*glBindTexture(GL_TEXTURE_2D, texture_[0]);
 
-	MakeBox();
-	glTranslatef(0.0f, 5.0f, 0.0f);
+	pModel->draw();
+
+	glTranslatef(0.0f, -10.0f, 0.0f);
 
 	glBindTexture(GL_TEXTURE_2D, texture_[1]);
-	MakeBox();*/
+	//MakeBox();
+	MakeFloor();
 
 	xrot_ += xspeed_;
 	yrot_ += yspeed_;
@@ -380,6 +383,14 @@ void Engine::SetDepth(GLfloat z) {
 	z_ = z;
 }
 
+GLfloat Engine::GetHorizontal() {
+	return x_;
+}
+
+void Engine::SetHorizontal(GLfloat x) {
+	x_ = x;
+}
+
 GLfloat Engine::GetXSpeed() {
 	return xspeed_;
 }
@@ -478,4 +489,14 @@ GLvoid Engine::DrawWater() {
 	int vertex_size = sizeof(vertex_buffer) / sizeof(vertex_buffer[0]);
 
 	useBuffers(vertex_buffer, vertex_size, indices_buffer, indices_size, GL_TRIANGLE_STRIP, 50);
+}
+
+void Engine::MakeFloor() {
+	glBegin(GL_QUADS);
+	glNormal3f(0.0f, 1.0f, 0.0f);
+	glTexCoord2f(0.0f, 1.0f); glVertex3f(-100.0f, 1.0f, -100.0f);
+	glTexCoord2f(0.0f, 0.0f); glVertex3f(-100.0f, 1.0f, 100.0f);
+	glTexCoord2f(1.0f, 0.0f); glVertex3f(100.0f, 1.0f, 100.0f);
+	glTexCoord2f(1.0f, 1.0f); glVertex3f(100.0f, 1.0f, -100.0f);
+	glEnd();
 }
