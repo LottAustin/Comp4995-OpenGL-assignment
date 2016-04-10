@@ -129,7 +129,7 @@ BOOL CreateGLWindow(char* title, int width, int height, int bits, bool fullscree
 		0,											// No Accumulation Buffer
 		0, 0, 0, 0,									// Accumulation Bits Ignored
 		16,											// 16Bit Z-Buffer (Depth Buffer)  
-		0,											// No Stencil Buffer
+		1,											// Yes Stencil Buffer
 		0,											// No Auxiliary Buffer
 		PFD_MAIN_PLANE,								// Main Drawing Layer
 		0,											// Reserved
@@ -326,25 +326,25 @@ int WINAPI WinMain(HINSTANCE	hInstance,			// Instance
 				if (keys[VK_UP])
 				{
 					GLfloat xspeed = eng.GetXSpeed();
-					xspeed -= 0.001f;
+					xspeed -= 0.0001f;
 					eng.SetXSpeed(xspeed);
 				}
 				if (keys[VK_DOWN])
 				{
 					GLfloat xspeed = eng.GetXSpeed();
-					xspeed += 0.001f;
+					xspeed += 0.0001f;
 					eng.SetXSpeed(xspeed);
 				}
 				if (keys[VK_RIGHT])
 				{
 					GLfloat yspeed = eng.GetYSpeed();
-					yspeed += 0.001f;
+					yspeed += 0.0001f;
 					eng.SetYSpeed(yspeed);
 				}
 				if (keys[VK_LEFT])
 				{
 					GLfloat yspeed = eng.GetYSpeed();
-					yspeed -= 0.001f;
+					yspeed -= 0.0001f;
 					eng.SetYSpeed(yspeed);
 				}
 

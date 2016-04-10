@@ -82,7 +82,7 @@ GLvoid Engine::ReSizeGLScene(GLsizei width, GLsizei height)	// Resize And Initia
 	glLoadIdentity();										// Reset The Projection Matrix
 
 															// Calculate The Aspect Ratio Of The Window
-	gluPerspective(45.0f, (GLfloat)width / (GLfloat)height, 0.1f, 100.0f);
+	gluPerspective(45.0f, (GLfloat)width / (GLfloat)height, 0.1f, 1000.0f);
 
 	glMatrixMode(GL_MODELVIEW);								// Select The Modelview Matrix
 	glLoadIdentity();										// Reset The Modelview Matrix
@@ -90,13 +90,47 @@ GLvoid Engine::ReSizeGLScene(GLsizei width, GLsizei height)	// Resize And Initia
 
 int Engine::DrawGLScene(GLvoid)								// Here's Where We Do All The Drawing
 {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);		// Clear The Screen And The Depth Buffer
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);		// Clear The Screen And The Depth Buffer
 	glLoadIdentity();										// Reset The View
 	glTranslatef(0.0f, 0.0f, z_);
 
 	glRotatef(xrot_, 1.0f, 0.0f, 0.0f);
 	glRotatef(yrot_, 0.0f, 1.0f, 0.0f);
 
+	glColorMask(0, 0, 0, 0);
+
+	glEnable(GL_STENCIL_TEST);
+	glStencilFunc(GL_ALWAYS, 1, 1);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+
+	glDisable(GL_DEPTH_TEST);
+	DrawWater();
+
+	glEnable(GL_DEPTH_TEST);
+	glColorMask(1, 1, 1, 1);
+	glStencilFunc(GL_EQUAL, 1, 1);
+
+	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+	glEnable(GL_CLIP_PLANE0);
+
+	glClipPlane(GL_CLIP_PLANE0, eqr);
+	glPushMatrix();
+		glScalef(0.5f, -0.5f, 0.5f);
+		pModel->draw();
+	glPopMatrix();
+	glDisable(GL_CLIP_PLANE0);
+	glDisable(GL_STENCIL_TEST);
+
+	glEnable(GL_BLEND);
+	glDisable(GL_LIGHTING);
+	glColor4f(1.0f, 1.0f, 1.0f, 0.8f);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	DrawWater();
+
+	glEnable(GL_LIGHTING);
+	glDisable(GL_BLEND);
+	glScalef(0.5f, 0.5f, 0.5f);
 	pModel->draw();
 
 	/*glBindTexture(GL_TEXTURE_2D, texture_[0]);
@@ -109,9 +143,9 @@ int Engine::DrawGLScene(GLvoid)								// Here's Where We Do All The Drawing
 
 	xrot_ += xspeed_;
 	yrot_ += yspeed_;
+	wave += 0.005;
 	return TRUE;										// Keep Going
 }
-
 
 
 /*	This Code Creates Our OpenGL Window.  Parameters Are:					*
@@ -325,6 +359,8 @@ GLvoid Engine::KillGLWindow(GLvoid)								// Properly Kill The Window
 		MessageBox(NULL, "Could Not Unregister Class.", "SHUTDOWN ERROR", MB_OK | MB_ICONINFORMATION);
 		hInstance = NULL;									// Set hInstance To NULL
 	}
+
+	
 }
 
 bool Engine::GetScreenMode()
@@ -407,4 +443,39 @@ void Engine::MakeBox() {
 	glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f, 1.0f, 1.0f);
 	glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f, 1.0f, -1.0f);
 	glEnd();
+}
+
+void Engine::useBuffers(float* vertices, int vert_size, float* indices, int ind_size, GLuint type, int number) {
+	int finali = 0;
+	int first, second, third, forth;
+	float waves, prevPos = sin(wave) / 10;
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	for (float x = 0; x < number; x++) {
+		for (float z = 0; z < number; z++) {
+			for (int i = 0; i < ind_size; i += 4) {
+				first = indices[i]; second = indices[i + 1]; third = indices[i + 2]; forth = indices[i + 3];
+				waves = sin((wave + z)) / 10;
+				glBegin(type);
+					glNormal3f(0.0f, 1.0f, 0.0f);
+					glColor4f(0.2f, 0.5f, 1.0f, 0.5f);
+
+					glVertex3f(vertices[first * 3] + x, vertices[(first * 3) + 1] + prevPos, vertices[(first * 3) + 2] + z);
+					glVertex3f(vertices[second * 3] + x, vertices[(second * 3) + 1] + waves, vertices[(second * 3) + 2] + z);
+					glVertex3f(vertices[third * 3] + x, vertices[(third * 3) + 1] + prevPos, vertices[(third * 3) + 2] + z);
+					glVertex3f(vertices[forth * 3] + x, vertices[(forth * 3) + 1] + waves, vertices[(forth * 3) + 2] + z);
+				glEnd();
+				prevPos = waves;
+			}
+		}
+	}
+
+}
+
+GLvoid Engine::DrawWater() {
+	int num = 1;
+	GLfloat pointx = 1.0f, pointy = -1.0f;
+	int indices_size = sizeof(indices_buffer) / sizeof(indices_buffer[0]);
+	int vertex_size = sizeof(vertex_buffer) / sizeof(vertex_buffer[0]);
+
+	useBuffers(vertex_buffer, vertex_size, indices_buffer, indices_size, GL_TRIANGLE_STRIP, 50);
 }
